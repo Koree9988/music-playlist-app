@@ -131,7 +131,7 @@ npm install -D ts-node
 ### 4️⃣ Access the Apps
 
 - **Backend (NestJS)** → [http://localhost:3030](http://localhost:3030)
-- **Frontend (Next.js)** → [http://localhost:3001](http://localhost:3001)
+- **Frontend (Next.js)** → [http://localhost:8080](http://localhost:8080)
 - **Database (Postgres)** → `localhost:5432`
 
 ---
