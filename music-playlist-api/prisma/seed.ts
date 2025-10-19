@@ -303,31 +303,58 @@ async function main() {
     });
   }
   // 2️⃣ Create a test user
+  // const rawUser = {
+  //   email: 'test@user.com',
+  //   password: 'user@123',
+  //   name: 'Test User',
+  // };
+
+  // const existingUser = await prisma.users.findUnique({
+  //   where: { email: rawUser.email },
+  // });
+
+  // if (!existingUser) {
+  //   const hashedPassword = await bcrypt.hash(rawUser.password, 10);
+  //   await prisma.users.create({
+  //     data: {
+  //       email: rawUser.email,
+  //       password: hashedPassword,
+  //       name: rawUser.name,
+  //       created_at: new Date(),
+  //       updated_at: new Date(),
+  //     },
+  //   });
+  //   console.log('👤 User created:', rawUser.email);
+  // } else {
+  //   console.log('⚠️ User already exists, skipping.');
+  // }
+
   const rawUser = {
+    id: 1, // fixed ID
     email: 'test@user.com',
     password: 'user@123',
     name: 'Test User',
   };
 
-  const existingUser = await prisma.users.findUnique({
-    where: { email: rawUser.email },
-  });
+  const hashedPassword = await bcrypt.hash(rawUser.password, 10);
 
-  if (!existingUser) {
-    const hashedPassword = await bcrypt.hash(rawUser.password, 10);
-    await prisma.users.create({
-      data: {
-        email: rawUser.email,
-        password: hashedPassword,
-        name: rawUser.name,
-        created_at: new Date(),
-        updated_at: new Date(),
-      },
-    });
-    console.log('👤 User created:', rawUser.email);
-  } else {
-    console.log('⚠️ User already exists, skipping.');
-  }
+  await prisma.users.upsert({
+    where: { id: rawUser.id }, // look for id = 1
+    update: {
+      email: rawUser.email,
+      password: hashedPassword,
+      name: rawUser.name,
+      updated_at: new Date(),
+    },
+    create: {
+      id: rawUser.id, // force ID = 1
+      email: rawUser.email,
+      password: hashedPassword,
+      name: rawUser.name,
+      created_at: new Date(),
+      updated_at: new Date(),
+    },
+  });
 }
 
 main()
