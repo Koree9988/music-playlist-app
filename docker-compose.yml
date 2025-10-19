@@ -31,7 +31,7 @@ services:
       context: ./music-playlist       # ✅ fixed folder name
     container_name: music-frontend
     ports:
-      - "8080:8080"
+      - "8080:3000"
     environment:
       BACKEND_URL: http://localhost:3030
       NEXT_PUBLIC_BACKEND_URL: http://localhost:3030

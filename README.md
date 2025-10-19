@@ -15,14 +15,14 @@ All services are orchestrated using **Docker Compose**.
 ```
 music_app/
 ├── docker-compose.yml
-├── backend/              # NestJS + Prisma API
+├── music-playlist-api/              # NestJS + Prisma API
 │   ├── prisma/
 │   │   ├── schema.prisma
 │   │   ├── seed.ts
 │   │   └── migrations/
 │   └── src/
 │       └── main.ts
-└── frontend/             # Next.js app
+└── music-playlist/             # Next.js app
     ├── package.json
     └── next.config.js
 ```
@@ -49,24 +49,26 @@ services:
       - postgres_data:/var/lib/postgresql/data
 
   backend:
-    build: ./music-plalist-api
+    build:
+      context: ./music-playlist-api # ✅ fixed folder name
     container_name: music-backend
     ports:
       - "3030:3000"
     environment:
-      - DATABASE_URL=postgresql://musicplaylistadmin:4HcK94qXyZOilMWV@postgres:5432/music_playlist?schema=public
-      - PORT=3000
+      DATABASE_URL: postgresql://musicplaylistadmin:4HcK94qXyZOilMWV@postgres:5432/music_playlist?schema=public
+      PORT: 3000
     depends_on:
       - postgres
 
   frontend:
-    build: ./music-plalist
+    build:
+      context: ./music-playlist # ✅ fixed folder name
     container_name: music-frontend
     ports:
-      - "3001:3000"
+      - "8080:3000"
     environment:
-      - BACKEND_URL=http://localhost:3030
-      - NEXT_PUBLIC_BACKEND_URL=http://localhost:3030
+      BACKEND_URL: http://localhost:3030
+      NEXT_PUBLIC_BACKEND_URL: http://localhost:3030
     depends_on:
       - backend
 
