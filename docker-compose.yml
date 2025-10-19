@@ -13,5 +13,27 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
+  backend:
+    build: ./music-plalist-api
+    ports:
+      - "3000:3000"
+    env_file:
+      # - ./backend/.env
+      - DATABASE_URL="postgresql://musicplaylistadmin:4HcK94qXyZOilMWV@localhost:5432/music_playlist?schema=public"
+      - PORT=3030
+    depends_on:
+      - postgres
+
+  frontend:
+    build: ./music-plalist
+    ports:
+      - "3001:3000"
+    environment:
+      - BACKEND_URL=http://localhost:3030
+      - NEXT_PUBLIC_BACKEND_URL=http://localhost:3030
+    depends_on:
+      - backend
+
 volumes:
   postgres_data:
+
