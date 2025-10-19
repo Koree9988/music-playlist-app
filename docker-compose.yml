@@ -1,0 +1,17 @@
+version: '3.8'
+services:
+  postgres:
+    image: postgres:16
+    restart: always
+    container_name: music-postgres
+    environment:
+      POSTGRES_USER: musicplaylistadmin
+      POSTGRES_PASSWORD: 4HcK94qXyZOilMWV
+      POSTGRES_DB: music_playlist
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:

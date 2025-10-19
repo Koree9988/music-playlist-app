@@ -1,0 +1,76 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+// prisma/schema.prisma
+
+generator client {
+  provider = "prisma-client-js"
+  // output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Users {
+  id         Int        @id @default(autoincrement())
+  email      String     @unique
+  name       String?
+  password   String
+  playlists  Playlist[]
+  created_at DateTime   @default(now())
+  updated_at DateTime   @updatedAt
+
+  @@map("users")
+}
+
+model Playlist {
+  id         Int             @id @default(autoincrement())
+  name       String
+  user_id    Int
+  user       Users           @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  musics     PlaylistMusic[]
+  created_at DateTime        @default(now())
+  updated_at DateTime        @updatedAt
+
+  @@map("playlist")
+}
+
+model PlaylistMusic {
+  playlistId Int
+  musicId    Int
+  playlist   Playlist @relation(fields: [playlistId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  music      Music    @relation(fields: [musicId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@id([playlistId, musicId])
+  @@map("plalist_music")
+}
+
+model Music {
+  id         Int             @id @default(autoincrement())
+  title      String
+  duration   Int
+  album_id   Int
+  album      Album           @relation(fields: [album_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  artist     String
+  image_url  String
+  playlists  PlaylistMusic[]
+  publish_at DateTime
+  created_at DateTime        @default(now())
+  updated_at DateTime        @updatedAt
+
+  @@map("music")
+}
+
+model Album {
+  id         Int      @id @default(autoincrement())
+  title      String   @unique
+  musics     Music[]
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@map("album")
+}
